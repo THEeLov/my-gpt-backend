@@ -2,6 +2,9 @@ import express from "express"
 import cors from "cors"
 import { config } from "dotenv"
 
+// Routes imports
+import authRoutes from "./routes/auth.routes"
+
 config()
 const PORT = process.env.PORT || 3000;
 
@@ -14,6 +17,8 @@ app.use(cors({
 
 app.use(express.json());
 
+// Routing
+app.use("/api/auth", authRoutes);
 
 app.listen(PORT, () => {
   console.log(`server is running on port ${PORT}`)
