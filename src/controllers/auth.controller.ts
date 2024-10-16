@@ -7,7 +7,10 @@ import {
 } from "../errors/databaseErrors";
 import { generateToken } from "../utils/generateToken";
 
-export const signInUser = async (req: Request, res: Response) => {
+export const signInUser = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   const { email, password } = req.body;
 
   const result = await findUserSignIn(email, password);
@@ -26,7 +29,10 @@ export const signInUser = async (req: Request, res: Response) => {
   return res.status(500).json({ error: "Internal server error" });
 };
 
-export const signUpUser = async (req: Request, res: Response) => {
+export const signUpUser = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
   const { username, email, password, confirmPassword } = req.body;
 
   if (password !== confirmPassword) {
