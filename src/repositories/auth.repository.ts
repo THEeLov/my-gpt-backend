@@ -8,6 +8,16 @@ import {
 } from "../errors/databaseErrors";
 import bcrypt from "bcryptjs";
 
+/**
+ * Finds a user by their email and checks if the provided password matches the stored hashed password.
+ *
+ * @param {string} email - The user's email address.
+ * @param {string} password - The plain text password provided by the user for authentication.
+ * @returns {Promise<DbResult<User>>} A promise that resolves to a `DbResult` containing either:
+ * - The user object if credentials are valid.
+ * - An `InvalidCredentials` error if the credentials are invalid.
+ *
+ */
 export const findUserSignIn = async (
   email: string,
   password: string
@@ -31,6 +41,17 @@ export const findUserSignIn = async (
   }
 };
 
+/**
+ * Creates a new user with the given username, email, and password.
+ *
+ * @param {string} username - The username for the new user.
+ * @param {string} email - The email address for the new user.
+ * @param {string} password - The password for the new user (should be hashed before being passed).
+ * @returns {Promise<DbResult<User>>} A promise that resolves to a `DbResult` containing either:
+ * - The newly created user object.
+ * - An `EmailAlreadyExists` error if the email is already registered.
+ *
+ */
 export const createUser = async (
   username: string,
   email: string,

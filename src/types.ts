@@ -10,7 +10,7 @@ export type User = {
 export type Conversation = {
   id: string;
   name: string;
-  createdAt: string;
+  createdAt: Date;
 }
 
 export type DbResult<T> = Promise<Result<T>>;
