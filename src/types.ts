@@ -13,4 +13,10 @@ export type Conversation = {
   createdAt: Date;
 }
 
+export type Message = {
+  id: string;
+  message: string;
+  createdAt: Date;
+}
+
 export type DbResult<T> = Promise<Result<T>>;

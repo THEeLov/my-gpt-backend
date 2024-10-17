@@ -1,19 +1,22 @@
-import { Request, Response } from "express"
+import { Request, Response } from "express";
 import { createConversation } from "../repositories/conversations.repository";
+import { createMessage } from "../repositories/messages.repository";
 
-export const postMessage = async (req: Request, res: Response): Promise<Response> => {
-
-  const id = req.params.id;
+export const postMessage = async (
+  req: Request,
+  res: Response
+): Promise<Response> => {
+  const conversationId = req.params.id;
   const { message, userId } = req.body;
-  let result;
 
-  // No selected chat so we create new one
-  if (id === undefined) {
-    result = await createConversation(message, userId);
+  const result =
+    conversationId === undefined
+      ? await createConversation(message, userId)
+      : await createMessage(conversationId, message, userId);
+
+  if (result.isOk) {
+    return res.status(200).json(result.value);
   }
 
-  else {
-
-
-  }
-}
+  return res.status(500).json({ error: "Internal server error - new message" });
+};
