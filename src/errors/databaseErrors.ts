@@ -15,4 +15,10 @@ export class InvalidCredentials extends BaseError {
   constructor() {
     super("Invalid Credentials");
   }
-} 
+}
+
+export class NoConversationFound extends BaseError {
+  constructor() {
+    super("No conversation was found");
+  }
+}

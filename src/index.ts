@@ -4,7 +4,7 @@ import { config } from "dotenv";
 
 // Routes imports
 import authRoutes from "./routes/auth.routes";
-import messageRoutes from "./routes/message.routes";
+import messageRoutes from "./routes/messages.routes";
 
 config();
 const PORT = process.env.PORT || 3000;
@@ -22,7 +22,7 @@ app.use(express.json());
 
 // Routing
 app.use("/api/auth", authRoutes);
-app.use("/api/message", messageRoutes);
+app.use("/api/messages", messageRoutes);
 
 app.listen(PORT, () => {
   console.log("testing");
