@@ -1,7 +1,7 @@
 import { Result } from "@badrap/result";
 import { Conversation, ConversationWithMessages, DbResult } from "../types";
 import prisma from "../client";
-import { NoConversationFound } from "../errors/databaseErrors";
+import { NoConversationFound, PermissionError } from "../errors/databaseErrors";
 
 /**
  * Creates a new conversation with an initial message and two participants: the user and the chatbot.
@@ -77,7 +77,8 @@ export const getConversationsOfUser = async (
  *
  */
 export const getConversationMessages = async (
-  conversationId: string
+  conversationId: string,
+  userId: string
 ): Promise<DbResult<ConversationWithMessages>> => {
   try {
     const conversationsWithMessages = await prisma.conversation.findUnique({
@@ -90,11 +91,20 @@ export const getConversationMessages = async (
             user: true,
           },
         },
+        participants: true,
       },
     });
 
     if (conversationsWithMessages === null) {
       return Result.err(new NoConversationFound());
+    }
+
+    const isUserParticipant = conversationsWithMessages.participants.some(
+      (participant) => participant.id === userId
+    );
+
+    if (!isUserParticipant) {
+      return Result.err(new PermissionError());
     }
 
     return Result.ok(conversationsWithMessages);

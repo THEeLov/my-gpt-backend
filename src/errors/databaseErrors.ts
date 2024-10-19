@@ -22,3 +22,9 @@ export class NoConversationFound extends BaseError {
     super("No conversation was found");
   }
 }
+
+export class PermissionError extends BaseError {
+  constructor() {
+    super("No permission")
+  }
+}
