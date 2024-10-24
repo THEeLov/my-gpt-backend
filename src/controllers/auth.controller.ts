@@ -17,7 +17,7 @@ export const signInUser = async (
 
   if (result.isOk) {
     const token = generateToken(result.value.id);
-    return res.status(200).json({ authToken: token, data: result.value });
+    return res.status(200).json({ authToken: token, user: result.value });
   }
 
   const error = result.error;
@@ -46,7 +46,7 @@ export const signUpUser = async (
 
   if (result.isOk) {
     const token = generateToken(result.value.id);
-    return res.status(201).json({ authToken: token, data: result.value });
+    return res.status(201).json({ authToken: token, user: result.value });
   }
 
   const error = result.error;
