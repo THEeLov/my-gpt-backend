@@ -23,6 +23,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.9.0",
     "mongoose": "^8.7.0",
+    "openai": "^4.68.4",
     "socket.io": "^4.8.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",

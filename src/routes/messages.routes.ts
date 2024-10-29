@@ -4,6 +4,7 @@ import { protectedRoute } from "../middlewares/protectedRoute";
 
 const router = express.Router();
 
-router.post("/:id", protectedRoute, postMessage);
+router.post("/", protectedRoute, postMessage);
+router.post("/:conversationId", protectedRoute, postMessage);
 
 export default router;
