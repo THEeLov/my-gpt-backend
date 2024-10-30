@@ -59,6 +59,9 @@ export const getConversationsOfUser = async (
           some: { id: userId },
         },
       },
+      orderBy: {
+        createdAt: 'desc',
+      },
     });
 
     return Result.ok(conversations);

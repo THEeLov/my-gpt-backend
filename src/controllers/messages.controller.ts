@@ -6,17 +6,17 @@ import {
 } from "../repositories/messages.repository";
 
 export const postMessage = async (
-  req: Request,
+  req: any,
   res: Response
 ): Promise<Response> => {
   const conversationId = req.params.conversationId;
-  const { message, userId } = req.body;
+  const { message } = req.body;
 
   // Create or add user message to the conversation, then add chat gpt response
   const result =
     conversationId === undefined
-      ? await createConversation(message, userId)
-      : await createMessage(conversationId, message, userId);
+      ? await createConversation(message, req.user.id)
+      : await createMessage(conversationId, message, req.user.id);
 
   if (result.isOk) {
     // Now add response to the conversation
@@ -30,6 +30,5 @@ export const postMessage = async (
       .status(500)
       .json({ error: "Interanl server error - chat response" });
   }
-
   return res.status(500).json({ error: "Internal server error - new message" });
 };
