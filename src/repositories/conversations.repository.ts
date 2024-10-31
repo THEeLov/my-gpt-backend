@@ -2,9 +2,11 @@ import { Result } from "@badrap/result";
 import { Conversation, ConversationWithMessages, DbResult } from "../types";
 import prisma from "../client";
 import { NoConversationFound, PermissionError } from "../errors/databaseErrors";
+import OpenAI from "openai";
+const openai = new OpenAI();
 
 /**
- * Creates a new conversation with an initial message and two participants: the user and the chatbot.
+ * Creates a new conversation with a headline that AI created and two participants: the user and the chatbot.
  *
  * @param {string} message - The message content sent by the user.
  * @param {string} userId - The ID of the user who initiates the conversation.
@@ -17,9 +19,30 @@ export const createConversation = async (
   userId: string
 ): Promise<DbResult<Conversation>> => {
   try {
+
+    // Get a headline from AI
+    const completion = await openai.chat.completions.create(
+      {
+        model: "gpt-4o",
+        messages: [
+          {
+          "role": "user",
+          "content": `Create a headline from this question user posted: ${message}`
+          }
+        ],
+        temperature: 0.7,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
     const newConversation = await prisma.conversation.create({
       data: {
-        name: message,
+        name: `${completion.choices[0].message.content}`,
         participants: {
           connect: [{ id: userId }, { id: process.env.CHATBOT_ID }],
         },

@@ -4,6 +4,7 @@ import { ChatMessage, DbResult } from "../types";
 import { Conversation } from "@prisma/client";
 import OpenAI from "openai";
 import { getConversationHistory } from "./conversations.repository";
+import { formatChatHistory } from "../utils/formatChatHistory";
 const openai = new OpenAI();
 
 /**
@@ -55,21 +56,9 @@ export const getChatResponseMessage = async (
       return Result.err(conversationHistory.error);
     }
 
+    // Format chat history
     const { messages } = conversationHistory.value;
-
-    const formattedMessages: ChatMessage[] = [
-      ...messages.map((msg) => ({
-        role:
-          msg.user.id === process.env.CHATBOT_ID
-            ? ("assistant" as const)
-            : ("user" as const),
-        content: msg.message,
-      })),
-      {
-        role: "user",
-        content: message,
-      },
-    ];
+    const formattedMessages: ChatMessage[] = formatChatHistory(messages, message);
 
     const completion = await openai.chat.completions.create(
       {
