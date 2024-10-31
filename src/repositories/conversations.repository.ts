@@ -116,6 +116,20 @@ export const getConversationMessages = async (
   }
 };
 
+/**
+ * Retrieves the conversation history for a given conversation ID.
+ *
+ * This function queries the database to find a unique conversation by its ID.
+ * It includes the related messages, each with its associated user details.
+ * The messages are ordered by their creation date in ascending order,
+ * and only the first 10 messages are retrieved.
+ *
+ * @param {string} conversationId - The unique identifier of the conversation to retrieve.
+ * @returns {Promise<DbResult<ConversationWithMessages>>} A promise that resolves to a DbResult containing
+ * either the conversation with its messages or an error if the conversation is not found.
+ *
+ * @throws Will return an error result if any database error occurs or if the conversation is not found.
+ */
 export const getConversationHistory = async (
   conversationId: string
 ): Promise<DbResult<ConversationWithMessages>> => {
@@ -140,7 +154,7 @@ export const getConversationHistory = async (
     if (conversationsWithMessages === null) {
       return Result.err(new NoConversationFound());
     }
-    
+
     return Result.ok(conversationsWithMessages);
   } catch (error) {
     return Result.err(new Error());

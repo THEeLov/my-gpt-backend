@@ -44,6 +44,14 @@ export const createMessage = async (
   }
 };
 
+/**
+ * Retrieves a chat response message based on user input and conversation history.
+ *
+ * @param {string} message - The user's input message that will be sent to the AI model.
+ * @param {string} conversationId - The unique identifier for the conversation.
+ * @returns {Promise<DbResult<Conversation>>} - A promise that resolves to the result of the conversation,
+ *                                                which includes the newly created message and the updated conversation history.
+ */
 export const getChatResponseMessage = async (
   message: string,
   conversationId: string
