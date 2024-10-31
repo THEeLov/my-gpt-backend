@@ -1,8 +1,9 @@
 import { Result } from "@badrap/result";
 import prisma from "../client";
-import { DbResult, Message } from "../types";
+import { ChatMessage, DbResult, Message } from "../types";
 import { Conversation } from "@prisma/client";
 import OpenAI from "openai";
+import { getConversationHistory } from "./conversations.repository";
 const openai = new OpenAI();
 
 /**
@@ -48,15 +49,29 @@ export const getChatResponseMessage = async (
   conversationId: string
 ): Promise<DbResult<Conversation>> => {
   try {
+    const conversationHistory = await getConversationHistory(conversationId);
+
+    if (conversationHistory.isErr) {
+      return Result.err(conversationHistory.error);
+    }
+
+    const { messages } = conversationHistory.value;
+
+    const formattedMessages: ChatMessage[] = [
+      ...messages.map((msg) => ({
+        role: msg.user.id === process.env.CHATBOT_ID ? "assistant" as const : "user" as const,
+        content: msg.message,
+      })),
+      {
+        role: "user",
+        content: message,
+      },
+    ];
+
     const completion = await openai.chat.completions.create(
       {
         model: "gpt-4o",
-        messages: [
-          {
-            role: "user",
-            content: message,
-          },
-        ],
+        messages: formattedMessages,
         temperature: 0.7,
       },
       {
@@ -88,7 +103,7 @@ export const getChatResponseMessage = async (
           include: {
             messages: {
               orderBy: {
-                createdAt: 'asc',
+                createdAt: "asc",
               },
               select: {
                 id: true,

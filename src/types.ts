@@ -28,3 +28,8 @@ export type ConversationWithMessages = Conversation & {
 };
 
 export type DbResult<T> = Promise<Result<T>>;
+
+export type ChatMessage = {
+  role: "user" | "assistant" | "system";
+  content: string;
+}

@@ -60,7 +60,7 @@ export const getConversationsOfUser = async (
         },
       },
       orderBy: {
-        createdAt: 'desc',
+        createdAt: "desc",
       },
     });
 
@@ -110,6 +110,37 @@ export const getConversationMessages = async (
       return Result.err(new PermissionError());
     }
 
+    return Result.ok(conversationsWithMessages);
+  } catch (error) {
+    return Result.err(new Error());
+  }
+};
+
+export const getConversationHistory = async (
+  conversationId: string
+): Promise<DbResult<ConversationWithMessages>> => {
+  try {
+    const conversationsWithMessages = await prisma.conversation.findUnique({
+      where: {
+        id: conversationId,
+      },
+      include: {
+        messages: {
+          include: {
+            user: true,
+          },
+          orderBy: {
+            createdAt: "asc",
+          },
+          take: 10,
+        },
+      },
+    });
+
+    if (conversationsWithMessages === null) {
+      return Result.err(new NoConversationFound());
+    }
+    
     return Result.ok(conversationsWithMessages);
   } catch (error) {
     return Result.err(new Error());
