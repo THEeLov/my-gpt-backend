@@ -1,6 +1,6 @@
 import { Result } from "@badrap/result";
 import prisma from "../client";
-import { ChatMessage, DbResult, Message } from "../types";
+import { ChatMessage, DbResult } from "../types";
 import { Conversation } from "@prisma/client";
 import OpenAI from "openai";
 import { getConversationHistory } from "./conversations.repository";
@@ -44,18 +44,10 @@ export const createMessage = async (
   }
 };
 
-/**
- * Retrieves a chat response message based on user input and conversation history.
- *
- * @param {string} message - The user's input message that will be sent to the AI model.
- * @param {string} conversationId - The unique identifier for the conversation.
- * @returns {Promise<DbResult<Conversation>>} - A promise that resolves to the result of the conversation,
- *                                                which includes the newly created message and the updated conversation history.
- */
 export const getChatResponseMessage = async (
   message: string,
   conversationId: string
-): Promise<DbResult<Conversation>> => {
+): Promise<DbResult<string>> => {
   try {
     const conversationHistory = await getConversationHistory(conversationId);
 
@@ -67,7 +59,10 @@ export const getChatResponseMessage = async (
 
     const formattedMessages: ChatMessage[] = [
       ...messages.map((msg) => ({
-        role: msg.user.id === process.env.CHATBOT_ID ? "assistant" as const : "user" as const,
+        role:
+          msg.user.id === process.env.CHATBOT_ID
+            ? ("assistant" as const)
+            : ("user" as const),
         content: msg.message,
       })),
       {
@@ -95,8 +90,8 @@ export const getChatResponseMessage = async (
     if (responseMessage.content === null) {
       return Result.err(new Error());
     }
-
-    const newMessage = await prisma.message.create({
+    
+    const result = await prisma.message.create({
       data: {
         message: responseMessage.content,
         user: {
@@ -106,27 +101,9 @@ export const getChatResponseMessage = async (
           connect: { id: conversationId },
         },
       },
-      include: {
-        conversation: {
-          include: {
-            messages: {
-              orderBy: {
-                createdAt: "asc",
-              },
-              select: {
-                id: true,
-                message: true,
-                userId: true,
-                createdAt: true,
-                // We don't need conversationId so i excluded it
-              },
-            },
-          },
-        },
-      },
     });
 
-    return Result.ok(newMessage.conversation);
+    return Result.ok(result.conversationId);
   } catch (error) {
     return Result.err(new Error());
   }

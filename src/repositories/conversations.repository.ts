@@ -93,6 +93,9 @@ export const getConversationMessages = async (
           include: {
             user: true,
           },
+          orderBy: {
+            createdAt: "asc"
+          }
         },
         participants: true,
       },

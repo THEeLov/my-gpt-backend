@@ -23,7 +23,7 @@ export const postMessage = async (
     const newResult = await getChatResponseMessage(message, result.value.id);
 
     if (newResult.isOk) {
-      return res.status(200).json(newResult.value);
+      return res.status(201).json(newResult.value);
     }
 
     return res
