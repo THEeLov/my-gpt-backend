@@ -27,7 +27,7 @@ export const createConversation = async (
         messages: [
           {
           "role": "user",
-          "content": `Create a headline from this question user posted: ${message}`
+          "content": `Create a headline from this question user posted (make it as short as possible, just some keywords): ${message}`
           }
         ],
         temperature: 0.7,
