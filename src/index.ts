@@ -26,4 +26,8 @@ app.use("/api/auth", authRoutes);
 app.use("/api/messages", messagesRoutes);
 app.use("/api/conversations", conversationsRoutes);
 
+app.listen(3000, () => {
+  console.log("server is running on port 3000");
+});
+
 export default app;

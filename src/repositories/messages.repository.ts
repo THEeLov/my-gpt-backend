@@ -41,6 +41,7 @@ export const createMessage = async (
 
     return Result.ok(newMessage.conversation!);
   } catch (error) {
+    console.log(error);
     return Result.err(new Error());
   }
 };
@@ -65,6 +66,7 @@ export const getChatResponseMessage = async (
         model: "gpt-4o",
         messages: formattedMessages,
         temperature: 0.7,
+        max_tokens: 1000,
       },
       {
         headers: {
@@ -91,6 +93,7 @@ export const getChatResponseMessage = async (
         },
       },
     });
+    console.log(result);
 
     return Result.ok(result.conversationId);
   } catch (error) {
