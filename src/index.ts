@@ -26,8 +26,4 @@ app.use("/api/auth", authRoutes);
 app.use("/api/messages", messagesRoutes);
 app.use("/api/conversations", conversationsRoutes);
 
-app.listen(PORT, () => {
-  console.log(`server is running on port ${PORT}`);
-});
-
 export default app;
