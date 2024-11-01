@@ -14,7 +14,7 @@ const app = express();
 
 app.use(
   cors({
-    origin: true,
+    origin: true, // This should be changed for real production 
     credentials: true,
   })
 );
